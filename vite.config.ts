@@ -5,7 +5,7 @@ import path from 'path';
 export default defineConfig({
   // ⭐️ CRITICAL FIX: Set the base path for GitHub Pages deployment.
   // This must match your repository name exactly (including case).
-  base: '/MyProject/', 
+  base: '/Project/', 
   
   plugins: [react()],
   resolve: {
