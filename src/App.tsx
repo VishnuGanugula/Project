@@ -1,5 +1,6 @@
 import { useState } from "react";
-import LoginPage from "./components/LoginPage";
+import SignInPage from "./components/SignInPage";
+import SignUpPage from "./components/SignUpPage";
 import LMSNavigation from "./components/LMSNavigation";
 import Dashboard from "./components/Dashboard";
 import AssignmentSubmission from "./components/AssignmentSubmission";
@@ -10,18 +11,38 @@ import { Toaster } from "./components/ui/sonner";
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentView, setCurrentView] = useState("dashboard");
+  const [authView, setAuthView] = useState<"signin" | "signup">("signin");
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [studentInfo, setStudentInfo] = useState<{
     id: string;
     name: string;
   } | null>(null);
 
-  const handleLogin = (studentId: string, password: string) => {
+  const handleSignIn = (studentId: string, password: string) => {
     if (studentId && password) {
-      setIsLoggedIn(true);
-      setStudentInfo({
-        id: studentId,
-        name: "Student User",
-      });
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setIsLoggedIn(true);
+        setStudentInfo({
+          id: studentId,
+          name: "Student User",
+        });
+        setIsTransitioning(false);
+      }, 300);
+    }
+  };
+
+  const handleSignUp = (studentId: string, email: string, password: string, confirmPassword: string) => {
+    if (studentId && email && password && confirmPassword && password === confirmPassword) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setIsLoggedIn(true);
+        setStudentInfo({
+          id: studentId,
+          name: "Student User",
+        });
+        setIsTransitioning(false);
+      }, 300);
     }
   };
 
@@ -36,7 +57,7 @@ export default function App() {
   const renderCurrentView = () => {
     switch (currentView) {
       case "dashboard":
-        return <Dashboard />;
+        return <Dashboard onLogout={handleLogout} />;
       case "courses":
         return <CoursesView />;
       case "assignments":
@@ -95,14 +116,26 @@ export default function App() {
   if (!isLoggedIn) {
     return (
       <>
-        <LoginPage onLogin={handleLogin} />
+        <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+          {authView === "signin" ? (
+            <SignInPage 
+              onSignIn={handleSignIn}
+              onSwitchToSignUp={() => setAuthView("signup")}
+            />
+          ) : (
+            <SignUpPage 
+              onSignUp={handleSignUp}
+              onSwitchToSignIn={() => setAuthView("signin")}
+            />
+          )}
+        </div>
         <Toaster />
       </>
     );
   }
 
   return (
-    <div className="h-screen flex bg-background">
+    <div className={`h-screen flex bg-background transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
       <LMSNavigation
         currentView={currentView}
         setCurrentView={setCurrentView}

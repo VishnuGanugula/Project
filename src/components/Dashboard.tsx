@@ -1,9 +1,14 @@
-import { Calendar, Clock, BookOpen, FileText, TrendingUp } from "lucide-react";
+import { Calendar, Clock, BookOpen, FileText, TrendingUp, LogOut } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Progress } from "./ui/progress";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 
-export default function Dashboard() {
+interface DashboardProps {
+  onLogout?: () => void;
+}
+
+export default function Dashboard({ onLogout }: DashboardProps) {
   const recentActivities = [
     { id: 1, type: 'assignment', title: 'Physics Lab Report', course: 'Physics 101', dueDate: '2025-01-08', status: 'pending' },
     { id: 2, type: 'workbook', title: 'Chapter 5 Exercises', course: 'Mathematics', completed: true },
@@ -19,9 +24,22 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold">Welcome back, Student!</h2>
-        <p className="text-muted-foreground">Here's your learning progress overview</p>
+      {/* Header with Logout Button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold">Welcome back, Student!</h2>
+          <p className="text-muted-foreground">Here's your learning progress overview</p>
+        </div>
+        {onLogout && (
+          <Button 
+            onClick={onLogout} 
+            variant="destructive"
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        )}
       </div>
 
       {/* Quick Stats */}
